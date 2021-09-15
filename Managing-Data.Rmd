@@ -1,0 +1,47 @@
+---
+title: "Managing Data"
+author: "MS"
+date: "9/15/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>. A cheat sheet can be found at https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf.
+
+**Reference:** Code in this document comes from [R in Action, Second Edition](https://www.manning.com/books/r-in-action-third-edition?)
+
+******
+## An Example
+```{r}
+manager <- c(1, 2, 3, 4, 5)
+date <- c("10/24/08", "10/28/08", "10/1/08", "10/12/08", "5/1/09") 
+country <- c("US", "US", "UK", "UK", "UK") 
+gender <- c("M", "F", "F", "M", "F")
+age <- c(32, 45, 25, 39, 99) 
+q1 <- c(5, 3, 3, 3, 2) 
+q2 <- c(4, 5, 5, 3, 2) 
+q3 <- c(5, 2, 5, 4, 1) 
+q4 <- c(5, 5, 5, NA, 2) 
+q5 <- c(5, 5, 2, NA, 1)
+leadership <- data.frame(manager, date, country, gender, age, q1, q2, q3, q4, q5, stringsAsFactors=FALSE)
+```
+
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
