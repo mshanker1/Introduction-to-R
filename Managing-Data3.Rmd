@@ -3,10 +3,10 @@ title: "Module 2: Managing Data"
 author: "MS"
 date: "9/15/2021"
 output:
-  html_document: null
+  pdf_document: default
   toc: yes
   number_sections: yes
-  pdf_document: default
+  html_document: null
 ---
 
 ```{r setup, include=FALSE}
@@ -207,13 +207,6 @@ attach(leadership)
 newdata <- leadership[gender=='M' & age > 30,] 
 detach(leadership)
 
-leadership$date <- as.Date(leadership$date, "%m/%d/%y") 
-
-startdate <- as.Date("2009-01-01") 
-enddate <- as.Date("2009-10-31") 
-
-newdata <- leadership[which(leadership$date >= startdate & 
- leadership$date <= enddate),] l
 
 ```
 
