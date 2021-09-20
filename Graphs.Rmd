@@ -1,0 +1,85 @@
+---
+title: "Making Graphs"
+author: "Murali Shanker"
+date: "9/20/2021"
+output:
+  html_document: default
+  toc: yes
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Graphs
+
+In R, we can *build* graphs one statement at a time
+
+```{r}
+attach(mtcars)
+plot(wt, mpg)
+abline(lm(mpg~wt))
+title("Regression of MPG on Weight")
+detach(mtcars)
+```
+
+## An Example
+The following table describes patient to two drugs:
+
+Dosage | Drug A | Drug B
+------- | ------ | ---------
+20 | 16 | 15
+30 | 20 | 18
+40 | 27 | 25
+45 | 40 | 31
+60 | 60 | 40
+
+```{r}
+dose  <- c(20, 30, 40, 45, 60)
+drugA <- c(16, 20, 27, 40, 60)
+drugB <- c(15, 18, 25, 31, 40)
+
+drug <- data.frame(dose,drugA,drugB)
+
+plot(dose, drugA, type="b") # type b indicates points and lines
+
+```
+### Parameters
+
+Many features of the graph can be modified using the *par()* function. The format is *par(optionname=value, optionname=value, ...)*. Specifying par() without parameters produces a list of the current graphical settings. Adding the no.readonly=TRUE option produces a list of current graphical settings that can be modified.
+
+```{r}
+opar <- par(no.readonly=TRUE) # make a copy of current settings
+par(lty=2, pch=17) # change line type to dashed, and points to solid triangle
+plot(dose, drugA, type="b")
+par(opar) # restore original setting
+
+# Alternatively,
+plot(dose, drugA, type="b", lty=2, pch=17)
+```
+
+The following table specifies the parameters for symbols and lines
+
+Parameter | Description
+--------- | ---------------
+pch | Specifies the symbol to use when plotting points
+cex | Specifies the symbol size. cex is a number indicating the amount by which plotting symbols should be scaled relative to the default. 1 = default, 1.5 is 50% larger, 0.5 is 50% smaller, and so forth.
+lty | Specifies the line type 
+lwd | Specifies the line width. lwd is expressed relative to the default (1 = default). For example, lwd=2 generates a line twice as wide as the default.
+
+## Easier Option
+
+You will normally plot graphs using ggplot. To help you understand ggplot better, and also provide an easier way to do plots, we will use a package.
+
+```{r}
+# installed.packages("ggplot2")
+library("ggplot2")
+
+#install.packages("esquisse")
+library("esquisse")
+#esquisser(drug)
+
+```
+
+ 
