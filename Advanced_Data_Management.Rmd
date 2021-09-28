@@ -1,0 +1,147 @@
+---
+title: "Advanced Data Management"
+author: "Murali Shanker"
+date: "9/27/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Objectives
+
+* Functions for mathematical and statistical functions
+* Program flow
+* User-written functions
+
+**Reference:** Code in this document comes from [R in Action, Second Edition](https://www.manning.com/books/r-in-action-third-edition?)
+
+## An Example
+
+A group of students have taken exams in math, science, and English. You want to combine these scores in order to determine a single perfor- mance indicator for each student. Additionally, you want to assign an A to the top 20% of students, a B to the next 20%, and so on. Finally, you want to sort the students alphabetically. 
+
+Student | Math | Science | English
+-------- | ---- | ------- | --------
+John Davis | 502 | 95 | 25 
+Angela Williams | 600 | 99 | 22 
+Bullwinkle Moose | 412 | 80 | 18 
+David Jones | 358 | 82 | 15 
+Janice Markhammer | 495 | 75 | 20 
+Cheryl Cushing | 512 | 85 | 28 
+Reuven Ytzrhak | 410 | 80 | 15 
+Greg Knox | 625 | 95 | 30 
+Joel England | 573 | 89 | 27 
+Mary Rayburn | 522 | 86 | 18
+
+## Numerical and Character Functions
+
+### Mathematical and Statistical Functions
+
+See this [link](https://www.statmethods.net/management/functions.html) or for [practice](https://campus.datacamp.com/courses/abc-intro-2-r/introduction-1?ex=2)
+
+Mathematical functions are also used as components in formulas, in plotting functions (for example, x versus sin(x)), and in formatting numerical values prior to printing. While the examples apply mathematical functions to scalars (individual numbers). When these functions are applied to numeric vectors, matrices, or data frames, they operate on each individual value. For example, sqrt(c(4, 16, 25)) returns c(2, 4, 5).
+
+```{r}
+x <- c(1:8)
+mean(x)
+sd(x)
+
+x_scaled <- scale(x)  # Standardize data; can also use the caret package
+mean(x_scaled)
+sd(x_scaled)
+```
+To standardize a specific column rather than an entire matrix or data frame, you can use code such as this:
+
+> newdata <- transform(mydata, myvar = scale(myvar)**10+50)
+
+### Character Functions
+
+See this [reference](https://www.statmethods.net/management/functions.html) for some commonly used character functions.
+
+Note that the functions _grep()_, _sub()_, and _strsplit()_ can search for a text string (fixed=TRUE) or a regular expression (fixed=FALSE); FALSE is the default. Regular expressions provide a clear and concise syntax for matching a pattern of text.
+
+### Other Useful functions
+
+```{r}
+x <- c(1:100)
+
+length(x)   # returns the length of object x
+
+indices <- seq(1, 10, 2) # generates a sequence
+indices
+
+y <- rep(1:3, 2) # repeat values 2 times
+y
+
+cut(x,10) # cut a continuous value x into 10 levels
+
+pretty(x,10) # Compute a sequence of about n+1 equally spaced ‘round’ values which cover the range of the values in x
+
+name <- c("Murali") # concatenates objects
+cat ("Hello", name, "\n")
+```
+
+### Applying Functions to Matrices and Data Frames
+
+```{r}
+a <- 5
+sqrt(a)
+
+b <- c(1.2, 5.65, 2.99)
+round(b)
+
+c <- matrix(runif(12), nrow=3) # generate data
+c
+log(c)
+mean(c)
+
+# R provides a function, apply(), that allows you to apply an arbitrary function to any dimension of a matrix, array, or data frame. 
+mydata <- matrix(rnorm(30), nrow=6) # generate data
+mydata
+apply(mydata,1, mean) # calculates row means
+apply(mydata, 2, mean) # calculates column mean
+```
+
+### Example (cont.)
+
+Combine subject test scores into a single performance indicator for each student, grade each student from A to F based on their relative standing (top 20%, next 20%, and so on), and sort the roster by last name followed by first name. 
+
+```{r}
+options(digits = 2)
+
+Student <- c("John Davis", "Angela Williams", "Bullwinkle Moose",  "David Jones", "Janice Markhammer", "Cheryl Cushing",
+"Reuven Ytzrhak", "Greg Knox", "Joel England",
+"Mary Rayburn")
+Math <- c(502, 600, 412, 358, 495, 512, 410, 625, 573, 522)
+Science <- c(95, 99, 80, 82, 75, 85, 80, 95, 89, 86)
+English <- c(25, 22, 18, 15, 20, 28, 15, 30, 27, 18)
+roster <- data.frame(Student, Math, Science, English,
+                       stringsAsFactors=FALSE) # create the dataframe
+roster
+
+z <- scale(roster[,2:4]) # Standardize the scores
+score <- apply(z, 1, mean) # calculate row means
+roster <- cbind (roster, score) # add the column to the roster
+roster
+
+y <- quantile(score, c(.8,.6,.4,.2)) # find the quantiles
+roster$grade[score >= y[1]] <- "A"  # grade the students
+roster$grade[score < y[1] & score >= y[2]] <- "B"
+roster$grade[score < y[2] & score >= y[3]] <- "C"
+roster$grade[score < y[3] & score >= y[4]] <- "D"
+roster$grade[score < y[4]] <- "F"
+roster
+
+# extract last and first names
+name <- strsplit((roster$Student), " ")
+Lastname <- sapply(name, "[", 2)
+Firstname <- sapply(name, "[", 1)
+roster <- cbind(Firstname,Lastname, roster[,-1])
+roster
+
+# sort
+roster <- roster[order(Lastname,Firstname),]
+roster
+
+```
