@@ -145,3 +145,4 @@ roster <- roster[order(Lastname,Firstname),]
 roster
 
 ```
+Practice by trying this [interactive](https://www.datacamp.com/courses/intermediate-r-practice) module on Datacamp.
