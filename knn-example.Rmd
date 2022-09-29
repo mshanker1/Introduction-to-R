@@ -1,0 +1,127 @@
+---
+title: "4-Classifiers"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+  html_notebook:
+    highlight: textmate
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+dir.create("images")
+```
+
+***
+
+# k-NN
+
+This notebook illustrates the code for Classifiers module. We will continue to use the Caret Package. The caret package (short for Classification And REgression Training) is a set of functions that attempt to streamline the process for creating predictive models. The package contains tools for:
+
+* data splitting/partitioning
+* pre-processing
+* feature selection
+* model tuning using resampling 
+
+***
+
+Some code in this package comes from the following reference:
+
+* https://www.dataminingbook.com/book/r-edition
+
+***
+
+Install packages if necessary. Uncomment before running.
+
+```{r}
+#install.packages("caret")
+library(caret)
+
+# install.packages("ISLR") # only install if needed
+library(ISLR)
+
+```
+
+***
+
+## Data Splitting
+
+We will use the Carseats datasets.
+
+```{r}
+head(Carseats)
+summary(Carseats)
+```
+
+Assume that we are interested in creating a training and validation set from this dataset. To simplify our illustration, we will restrict ourselves to the following three variables: Sales, Education, Urban, and use only a small dataset for illustration
+
+* First, we create a dataset with only the required columns. We will use the dplyr package. Install it if necessary
+* Then, we convert our categorical variable to dummy variables. Note that this categorical variable should be `char` or `factor`
+* Then, we create an index for the training sample.
+* We next create the training dataset
+* We then use the reverse index of the training sample to create the validation set
+
+
+```{r}
+library(dplyr)
+m_carseats <- select(Carseats,Sales,Income,Age,Urban) # Select a subset of variables
+
+# Create dummy variables
+dummyModel <- dummyVars(~Urban,data=m_carseats) # create the model
+urbanDummy <- predict(dummyModel,m_carseats)  # apply it to our dataset
+head(urbanDummy)
+
+# Now add the dummy variables and remove the original Urban variable
+m_carseats_dummy <- cbind(m_carseats[,-4],urbanDummy)
+head(m_carseats_dummy)
+
+# Partition the data
+
+set.seed(15)
+Train_Index = createDataPartition(m_carseats_dummy$Sales,p=0.60, list=FALSE) # 60% of remaining data as validation
+Train_Data = m_carseats_dummy[Train_Index,]
+Validation_Data = m_carseats_dummy[-Train_Index,] # rest as validation
+
+# Now create the test data
+Test_Data <- data.frame(Age=45,Income=90,Urban.No=0,Urban.Yes=1)
+
+summary(Train_Data)
+summary(Validation_Data)
+summary(Test_Data)
+
+# Now, create the normalized model
+norm_var <- c("Income","Age")
+train.norm.df <- Train_Data[,norm_var] # We ignore the response, and all indicator variables
+valid.norm.df <- Validation_Data[,norm_var]
+test.norm.df <- Test_Data[,norm_var]
+
+norm.values <- preProcess(Train_Data[,norm_var], method=c("center", "scale"))
+train.norm.df <- predict(norm.values,Train_Data)
+valid.norm.df <- predict(norm.values, Validation_Data)
+test.norm.df <- predict(norm.values, test.norm.df)
+
+# Check normalized values
+summary(train.norm.df)
+summary(valid.norm.df)
+summary(test.norm.df)
+
+
+```
+
+***
+
+## KNN Training and Testing
+Let us now run knn on the training data, and then test it.
+```{r}
+set.seed(345)
+searchGrid <- expand.grid(k=seq(1:30))
+model <- train(Sales~.,data=train.norm.df,method="knn",tuneGrid=searchGrid)
+model
+best_k <- model$bestTune[[1]] # saves the best k
+```
+
+
+
+
