@@ -3,10 +3,10 @@ title: "Module 2: Managing Data"
 author: "MS"
 date: "9/15/2021"
 output:
-  pdf_document: default
+  html_document: null
   toc: yes
   number_sections: yes
-  html_document: null
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -17,22 +17,23 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>. A cheat sheet can be found at https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf.
 
-**Reference:** Code in this document comes from [R in Action, Second Edition](https://www.manning.com/books/r-in-action-third-edition?)
+**Reference:** Code in this document comes from [R in Action, Third Edition](https://www.manning.com/books/r-in-action-third-edition?)
 
 ******
 ## An Example {.tabset}
 ```{r}
-manager <- c(1, 2, 3, 4, 5)
-date <- c("10/24/08", "10/28/08", "10/1/08", "10/12/08", "5/1/09") 
-country <- c("US", "US", "UK", "UK", "UK") 
-gender <- c("M", "F", "F", "M", "F")
-age <- c(32, 45, 25, 39, 99) 
-q1 <- c(5, 3, 3, 3, 2) 
-q2 <- c(4, 5, 5, 3, 2) 
-q3 <- c(5, 2, 5, 4, 1) 
-q4 <- c(5, 5, 5, NA, 2) 
-q5 <- c(5, 5, 2, NA, 1)
-leadership <- data.frame(manager, date, country, gender, age, q1, q2, q3, q4, q5, stringsAsFactors=FALSE)
+leadership <- data.frame(
+   manager = c(1, 2, 3, 4, 5),
+   date    = c("10/24/08", "10/28/08", "10/1/08", "10/12/08", "5/1/09"),
+   country = c("US", "US", "UK", "UK", "UK"),
+   gender  = c("M", "F", "F", "M", "F"),
+   age     = c(32, 45, 25, 39, 99),
+   q1      = c(5, 3, 3, 3, 2),
+   q2      = c(4, 5, 5, 3, 2),
+   q3      = c(5, 2, 5, 4, 1),
+   q4      = c(5, 5, 5, NA, 2),
+   q5      = c(5, 5, 2, NA, 1)
+)
 ```
 ### Questions
 
@@ -45,8 +46,7 @@ leadership <- data.frame(manager, date, country, gender, age, q1, q2, q3, q4, q5
 ### Creating New Variables
 
 New variables can simply be created as *variable <- expression*
-The following code provides three ways of creating new variables, such that the new variables are also
-incorporated into the original data frame.
+The following code provides three ways of creating new variables, such that the new variables are also incorporated into the original data frame.
 
 ```{r}
 mydata<-data.frame(x1 = c(2, 2, 6, 4),  x2 = c(3, 4, 2, 8))
@@ -98,12 +98,13 @@ leadership$agecat <- factor(leadership$agecat,ordered = TRUE,levels=c("Elder","M
 
 
 ```{r}
-fix(leadership) # To interactively rename variables, or 
+#fix(leadership) # To interactively rename variables, or 
 names(leadership)[2] <- "testDate" # renames the second variable to *testDate*
 
 ```
 ```{r}
 names(leadership)[2] <- "date"
+names(leadership)[6:10] <- c("item1", "item2", "item3", "item4", "item5")
 ```
 
 ### Missing Values
@@ -115,6 +116,12 @@ is.na(leadership[,6:10])
 leadership$age[leadership$age == 99] <- NA # This codes values of 99 to NA, so they are not included in calculations
 
 # We might also want to exclude missing values from analyses. For example
+x <- c(1, 2, NA, 3)
+y <- x[1] + x[2] + x[3] + x[4]
+z <- sum(x)
+
+y <- sum(x, na.rm=TRUE)
+
 z <- sum(leadership$q4, na.rm = T)
 
 # We can also remove any observation with missing data using the na.omit() function.
@@ -122,6 +129,42 @@ z <- sum(leadership$q4, na.rm = T)
 leadership
 newdata <- na.omit(leadership)
 newdata
+```
+
+### Date Values
+
+![Date Formats](./table_3-4.png)
+```{r}
+# The default format for inputting dates is yyyy-mm-dd.
+mydates <- as.Date(c("2007-06-22", "2004-02-13"))
+
+# To convert strings to dates
+strDates <- c("01/05/1965", "08/16/1975")
+dates <- as.Date(strDates, "%m/%d/%Y") #Reads as mm/dd/yyyy
+
+# You can also specify your own format
+myformat <- "%m/%d/%y"
+leadership$date <- as.Date(leadership$date, myformat)
+
+# Sys.time and Sys.Date returns the system's idea of the current date with and without time.
+Sys.Date()
+today <- Sys.Date()
+format(today, format="%B %d %Y")
+format(today, format="%A")
+
+
+# date Returns a character string of the current system date and time.
+date()
+
+# We can also do operations with Date
+startdate <- as.Date("2020-02-13")
+enddate   <- as.Date("2021-01-22")
+days      <- enddate - startdate
+days
+
+today <- Sys.Date()
+dob   <- as.Date("1956-10-12")
+difftime(today, dob, units="weeks")
 ```
 
 ### Type Conversions
@@ -148,6 +191,53 @@ is.numeric(a)
 is.vector(a)
 is.character(a)
 ```
+
+## Exploring Datasets
+
+```{r}
+# A complete list of built-in datasets in R
+library(help='datasets')
+
+# let's explore the iris dataset
+head(iris) # what types of variables are there?
+
+summary(iris)
+
+dim(iris)
+
+# What type of graph should we plot for Sepal.length?
+
+hist(iris$Sepal.Length,
+     col='steelblue',
+     main='Histogram',
+     xlab='Length',
+     ylab='Frequency')
+
+```
+
+### Summary Statistics
+
+```{r}
+# Create a basic summary table
+
+library(psych)
+
+describe(iris)
+describe(iris, fast = T)
+describe(iris[,c("Sepal.Length","Sepal.Width")],fast=T)
+
+describeBy(iris, group=iris$Species,fast=T)
+
+```
+## Graphics
+
+```{r}
+library(esquisse)
+#esquisser(iris)
+```
+
+
+
 ### Sorting and Merging
 
 ```{r}
@@ -180,46 +270,47 @@ To join two data frames (datasets) vertically, use the rbind() function:
 
 ### Subsetting Datasets
 
-Previously we saw that we can access elements of a datafram as *dataframe[row indices, column indices]*. For example 
+Previously we saw that we can access elements of a dataframs as *dataframe[row indices, column indices]*. For example 
 
 ```{r}
-newdata <- leadership[c(-8,-9)]
-
-# alternatively
-
-myvar <- c("q1","q2", "q3", "q4")
-newdata <- leadership[myvar] # accomplishes the same
-
-# Dropping variables
-# Assuming that we want to drop q3 and q4
-newdata <- leadership[c(-8,-9)] # or alternatively
-
-myvars <- names(leadership) %in% c("q3", "q4") 
-newdata <- leadership[!myvars]
-
-# Selecting Observations
-newdata <- leadership[1:3,] 
-
-newdata <- leadership[leadership$gender=="M" & 
- leadership$age > 30,]  # Select all men over 30
-
-attach(leadership) 
-newdata <- leadership[gender=='M' & age > 30,] 
-detach(leadership)
+# newdata <- leadership[c(-8,-9)]
+# 
+# # alternatively
+# 
+# myV <- c("q3", "q4")
+# newdata <- leadership[myV] # accomplishes the same
+# newdata
+# 
+# # Dropping variables
+# # Assuming that we want to drop q3 and q4
+# newdata <- leadership[c(-8,-9)] # or alternatively
+# 
+# myvars <- names(leadership) %in% c("q3", "q4") 
+# newdata <- leadership[!myvars]
+# 
+# # Selecting Observations
+# newdata <- leadership[1:3,] 
+# 
+# newdata <- leadership[leadership$gender=="M" & 
+#  leadership$age > 30,]  # Select all men over 30
+# 
+# attach(leadership) 
+# newdata <- leadership[gender=='M' & age > 30,] 
+# detach(leadership)
 
 
 ```
 
 ```{r}
 # Now the easier way. subset() function
-newdata <- subset(leadership, age >= 35 | age < 24,
- select=c(q1, q2, q3, q4)) 
-
-newdata <- subset(leadership, gender=="M" & age > 25, 
- select=gender:q4) 
-
-# Finally, random samples
-mysample <- leadership[sample(1:nrow(leadership), 3, replace=FALSE),]
+# newdata <- subset(leadership, age >= 35 | age < 24,
+#  select=c("q1", q2, q3, q4)) 
+# 
+# newdata <- subset(leadership, gender=="M" & age > 25, 
+#  select=gender:q4) 
+# 
+# # Finally, random samples
+# mysample <- leadership[sample(1:nrow(leadership), 3, replace=FALSE),]
 
 ```
 
