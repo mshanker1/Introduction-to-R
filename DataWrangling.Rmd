@@ -1,0 +1,41 @@
+---
+title: "Data Wrangling"
+output: html_document
+date: "2024-02-11"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Wrangling
+
+A task that consumes most of the analyst's time is getting the data in the right format and content. This task could include removing missing values, recoding variables, identifying noise points, choosing the right data type, etc. Once data has been coded properly, the analyst's task could involve selecting a part of the data (filtering), summarizing, and sorting by different measures. This may also include combining different datasets, creating new variables, and other data manipulation. 
+
+R has many ways to accomplish the above. We will use [dplyr](https://dplyr.tidyverse.org/) package developed by Hadley Wickham for these tasks.    
+
+### Overview - dplyr
+
+The following overview is directly from the [website](https://dplyr.tidyverse.org/)
+
+dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:
+
+* mutate() adds new variables that are functions of existing variables
+* select() picks variables based on their names.
+* filter() picks cases based on their values.
+* summarise() reduces multiple values down to a single summary.
+* arrange() changes the ordering of the rows.
+
+These all combine naturally with *group_by()* which allows you to perform any operation “by group”. You can learn more about them in *vignette("dplyr")*. As well as these single-table verbs, dplyr also provides a variety of two-table verbs, which you can learn about in *vignette("two-table")*.
+
+If you are new to dplyr, the best place to start is the data transformation chapter in [R for Data Science](https://r4ds.hadley.nz/data-transform).
+
+#### Load Packages
+```{r}
+library(dplyr)
+
+```
+
+
+#### Subsetting or Filtering
+
