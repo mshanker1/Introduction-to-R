@@ -14,6 +14,41 @@ A task that consumes most of the analyst's time is getting the data in the right
 
 R has many ways to accomplish the above. We will use [dplyr](https://dplyr.tidyverse.org/) package developed by Hadley Wickham for these tasks.    
 
+
+#### Load Packages
+```{r}
+library(dplyr)
+```
+
+We will use the *mtcars* built in dataset to illustrate all data manipulation exercises in this section
+
+### Subsetting or Filtering
+
+Before we use dplyr, let us look at some basic subsetting examples
+
+```{r}
+x <- c(4, 3, 8, 2, 4) # create a vector
+
+# Now, let's subset. Note the use of  [ ]
+x[3] # This gives the third element of the vector
+x[1:4] # Elements 1 through 4
+x[-3] # All elements except 3
+x[c(2, 5)] # The second and fifth elements
+
+# Now, let's try conditional subsetting
+x[x>3] # All values > 3
+x[x> 3 & x==8] # All values > 3 and = 8. Note the use of "=="
+x[x> 3 | x==8] # All values > 3 OR = 8. Note the use of "=="
+
+# We can apply this to dataframes also
+
+summary(mtcars)
+head(mtcars)
+mtcars[4:6,2] # give rows 4 through 6, for column (variable) 2
+mtcars[mtcars$mpg>25,] # Choose all variables for cars with mpg > 25
+mtcars[mtcars$mpg>25 & mtcars$cyl>4]
+```
+
 ### Overview - dplyr
 
 The following overview is directly from the [website](https://dplyr.tidyverse.org/)
@@ -30,12 +65,47 @@ These all combine naturally with *group_by()* which allows you to perform any op
 
 If you are new to dplyr, the best place to start is the data transformation chapter in [R for Data Science](https://r4ds.hadley.nz/data-transform).
 
-#### Load Packages
+#### Subsetting
+
 ```{r}
 library(dplyr)
+filter(mtcars, mpg>25) # find all data for cars with mpg > 25
+
+select(mtcars,mpg) # this selects only the mpg variable
+select(mtcars,c(mpg,cyl)) # this selects mpg and cyl
+select(mtcars,1:3) # selects first three variable
+select(mtcars,starts_with("m")) # all variables that start with m
 
 ```
 
+Before we continue, let's take a look at an important operator, the pipe function
 
-#### Subsetting or Filtering
 
+#### The *%>%* operator
+
+The data pipe operator *%>%* is an important operator in producing code that is efficient and easy to read. Get comfortable in using this. This operator is part of the *magrittr* package, but is included with *dplyr*.
+
+When you see *%>%* read it as "then" 
+
+```{r}
+mtcars$mpg %>% mean() # take mpg data and THEN calculate the mean
+mtcars$mpg %>% mean() %>% sqrt() # calculate the square root of the mean mpg
+myResults <- mtcars$mpg %>% mean() %>% sqrt() # stores the results
+myResults
+```
+
+We can combine the filter and select operations through the pipe function
+```{r}
+mtcars %>% filter(mpg > 25) %>% select(cyl) # show the cyl of all cars with mpg > 25
+```
+
+Let us now look at an extensive example to demonstrate the superiority of the pipe operator
+```{r}
+# What does this code do?
+
+mtcars %>%
+  filter(carb>1) %>%
+  group_by(cyl) %>%
+  summarise(Avg_mpg = mean(mpg)) %>%
+  arrange(desc(Avg_mpg))
+```
