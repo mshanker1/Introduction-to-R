@@ -78,6 +78,16 @@ select(mtcars,starts_with("m")) # all variables that start with m
 
 ```
 
+Now, let us look at some useful filterning and subsetting operations
+```{r}
+# remove duplicates
+distinct(mtcars) 
+sample_frac(mtcars, 0.5, replace = TRUE) # Sample with replacement
+sample_n(mtcars, 10, replace = TRUE) # sample 10 rows
+slice(mtcars, 10:15) #Select rows by position. 
+slice_max(mtcars,mpg, n=10,by=cyl)
+```
+
 Before we continue, let's take a look at an important operator, the pipe function
 
 
@@ -99,6 +109,8 @@ We can combine the filter and select operations through the pipe function
 mtcars %>% filter(mpg > 25) %>% select(cyl) # show the cyl of all cars with mpg > 25
 ```
 
+
+
 Let us now look at an extensive example to demonstrate the superiority of the pipe operator
 ```{r}
 # What does this code do?
@@ -109,3 +121,31 @@ mtcars %>%
   summarise(Avg_mpg = mean(mpg)) %>%
   arrange(desc(Avg_mpg))
 ```
+
+#### Grouping Data by Categorical Variables
+
+Often, observations are nested within groups or variables, and our goal is perform statistical analysis both at the observation level and the group level. The *group_by()* function allows us to do that.
+```{r}
+group.cyl <- mtcars %>% group_by(cyl)
+group.cyl
+group.cyl %>% summarise(mean(mpg))
+
+# Let's combine multiple steps
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise(mean(mpg),mean(hp))
+```
+#### Arranging Variables by Value
+
+```{r}
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise(Mean_mpg = mean(mpg, na.rm = T),
+            Mean_hp = mean(hp, na.rm = T)) %>% 
+  arrange(desc(Mean_mpg))
+
+```
+
+### Help
+
+* [Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
