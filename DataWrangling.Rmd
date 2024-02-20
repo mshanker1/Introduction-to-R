@@ -38,7 +38,7 @@ x[c(2, 5)] # The second and fifth elements
 # Now, let's try conditional subsetting
 x[x>3] # All values > 3
 x[x> 3 & x==8] # All values > 3 and = 8. Note the use of "=="
-x[x> 3 | x==8] # All values > 3 OR = 8. Note the use of "=="
+x[x< 3 | x==4] # All values > 3 OR = 8. Note the use of "=="
 
 # We can apply this to dataframes also
 
@@ -46,7 +46,7 @@ summary(mtcars)
 head(mtcars)
 mtcars[4:6,2] # give rows 4 through 6, for column (variable) 2
 mtcars[mtcars$mpg>25,] # Choose all variables for cars with mpg > 25
-mtcars[mtcars$mpg>25 & mtcars$cyl>4]
+mtcars[mtcars$mpg>20 & mtcars$cyl>4,1:2]
 ```
 
 ### Overview - dplyr
@@ -83,6 +83,7 @@ Now, let us look at some useful filterning and subsetting operations
 # remove duplicates
 distinct(mtcars) 
 sample_frac(mtcars, 0.5, replace = TRUE) # Sample with replacement
+set.seed(4321)
 sample_n(mtcars, 10, replace = TRUE) # sample 10 rows
 slice(mtcars, 10:15) #Select rows by position. 
 slice_max(mtcars,mpg, n=10,by=cyl)
@@ -106,7 +107,7 @@ myResults
 
 We can combine the filter and select operations through the pipe function
 ```{r}
-mtcars %>% filter(mpg > 25) %>% select(cyl) # show the cyl of all cars with mpg > 25
+mtcars %>%  select(cyl) %>% filter(mpg > 25) # show the cyl of all cars with mpg > 25
 ```
 
 
@@ -145,6 +146,47 @@ mtcars %>%
   arrange(desc(Mean_mpg))
 
 ```
+
+#### Grouping and Summary Statistics
+Grouping data and performing summary statistics is an important part of any data analysis, so get
+comfortable doing this
+```{r}
+mtcars %>% summarise(Mean_mpg = mean(mpg, na.rm=T))
+
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise(Min = min(mpg, na.rm = T),
+            Max = max(mpg, na.rm = T),
+            Mean = mean(mpg, na.rm = T),
+            SD = sd(mpg, na.rm = T)) %>% 
+  arrange(Min)
+
+# What if we only wanted 6 or 4 cylinder cars
+mtcars %>% 
+  filter(cyl<8) %>% 
+  group_by(cyl) %>% 
+  summarise(Min = min(mpg, na.rm = T),
+            Max = max(mpg, na.rm = T),
+            Mean = mean(mpg, na.rm = T),
+            SD = sd(mpg, na.rm = T)) %>% 
+  arrange(Min)
+```
+
+#### Creating New Variables
+
+We will use the mutate function to create new variables
+```{r}
+mpg_cyl <- mtcars %>% mutate(mc = mpg / cyl)
+head(mpg_cyl)
+```
+
+#### Using sapply
+sapply( ) is a function can be used to apply a given function to all columns of
+a data frame in an efficient and elegant fashion.
+```{r}
+mtcars %>%  select(mpg,disp,hp) %>% sapply(sd)
+```
+
 
 ### Help
 
