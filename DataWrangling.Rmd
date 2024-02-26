@@ -107,7 +107,7 @@ myResults
 
 We can combine the filter and select operations through the pipe function
 ```{r}
-mtcars %>%  select(cyl) %>% filter(mpg > 25) # show the cyl of all cars with mpg > 25
+mtcars %>% filter(mpg>25) %>% select(cyl) # show the cyl of all cars with mpg > 25
 ```
 
 
@@ -187,6 +187,67 @@ a data frame in an efficient and elegant fashion.
 mtcars %>%  select(mpg,disp,hp) %>% sapply(sd)
 ```
 
+### Data Cleaning
+
+Data cleaning is the process of detecting and correcting or removing corrupt or inaccurate records from a dataset and refers to identifying incomplete or, inaccurate parts of the data and then replacing, modifying, or deleting the them. 
+
+#### Missing Values
+
+```{r}
+# Detecting Missing Values
+summary(airquality)
+colMeans(is.na(airquality)) # provides the percentage of missing values
+missing_cases <- airquality[!complete.cases(airquality),] #identifies all missing cases
+missing_cases
+```
+
+We can also impute missing values. One of the simplest approaches is to use k-NN. 
+```{r}
+library(VIM)
+missing_imputed_knn <- kNN(airquality,variable = c("Ozone"),k=4)
+colMeans(is.na(missing_imputed_knn))
+```
+#### Outliers
+```{r}
+boxplot(airquality)
+```
+### Data Transformation
+
+```{r}
+library(caret)
+summary(cars)
+data_norm_model <- preProcess(cars,method="range") # Apply range normalization
+cars_range_norm <- predict(data_norm_model,cars)
+summary(cars_range_norm)
+
+data_norm_z <- preProcess(cars,method=c("center","scale")) # Z normalization
+cars_z_norm <- predict(data_norm_z,cars)
+summary(cars_z_norm)
+
+library(ISLR)
+head(Wage)
+summary(Wage)
+
+dummy_model <- dummyVars(~race,data=Wage)
+head(predict(dummy_model,Wage))
+
+```
+### Partitioning Data: Training, Validation, and Test
+```{r}
+summary(Default)
+index_train <- createDataPartition(Default$default,p=0.6,list = F)
+train_data <- Default[index_train,]
+rest_data <- Default[-index_train,]
+nrow(train_data)
+```
+
+## Putting it Together
+
+1. Import Data: `read.csv`
+2. Clean up Data: Missing values, imputing data, converting variables
+3. Create new variables: `mutate()`
+3. Split data: Training, Validation, Test: `createDataPartition()`
+4. Normalization: Range and Z normalization: `preProcess(), predict()`
 
 ### Help
 

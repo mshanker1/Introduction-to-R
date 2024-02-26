@@ -401,8 +401,8 @@ x[x&gt;3] # All values &gt; 3</code></pre>
 <pre><code>## [1] 4 8 4</code></pre>
 <pre class="r"><code>x[x&gt; 3 &amp; x==8] # All values &gt; 3 and = 8. Note the use of &quot;==&quot;</code></pre>
 <pre><code>## [1] 8</code></pre>
-<pre class="r"><code>x[x&gt; 3 | x==8] # All values &gt; 3 OR = 8. Note the use of &quot;==&quot;</code></pre>
-<pre><code>## [1] 4 8 4</code></pre>
+<pre class="r"><code>x[x&lt; 3 | x==4] # All values &gt; 3 OR = 8. Note the use of &quot;==&quot;</code></pre>
+<pre><code>## [1] 4 2 4</code></pre>
 <pre class="r"><code># We can apply this to dataframes also
 
 summary(mtcars)</code></pre>
@@ -445,8 +445,11 @@ summary(mtcars)</code></pre>
 ## Fiat X1-9      27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
 ## Porsche 914-2  26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
 ## Lotus Europa   30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2</code></pre>
-<pre class="r"><code>mtcars[mtcars$mpg&gt;25 &amp; mtcars$cyl&gt;4]</code></pre>
-<pre><code>## data frame with 0 columns and 32 rows</code></pre>
+<pre class="r"><code>mtcars[mtcars$mpg&gt;20 &amp; mtcars$cyl&gt;4,1:2]</code></pre>
+<pre><code>##                 mpg cyl
+## Mazda RX4      21.0   6
+## Mazda RX4 Wag  21.0   6
+## Hornet 4 Drive 21.4   6</code></pre>
 </div>
 <div id="overview---dplyr" class="section level3">
 <h3>Overview - dplyr</h3>
@@ -654,35 +657,36 @@ distinct(mtcars) </code></pre>
 ## Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
 ## Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
 <pre class="r"><code>sample_frac(mtcars, 0.5, replace = TRUE) # Sample with replacement</code></pre>
-<pre><code>##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-## Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-## Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
-## Merc 240D...3       24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
-## Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
-## Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
-## Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-## Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
-## Valiant...8         18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-## Merc 240D...9       24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
-## Valiant...10        18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-## Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-## Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
-## Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
-## Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
-## Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
-## Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4</code></pre>
-<pre class="r"><code>sample_n(mtcars, 10, replace = TRUE) # sample 10 rows</code></pre>
-<pre><code>##                   mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-## Hornet 4 Drive   21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-## Merc 280C        17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
-## Merc 230...3     22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
-## Fiat 128         32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
-## Camaro Z28       13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
-## Merc 230...6     22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
-## Ford Pantera L   15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
-## Pontiac Firebird 19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
-## AMC Javelin      15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
-## Toyota Corona    21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1</code></pre>
+<pre><code>##                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+## Volvo 142E         21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+## Mazda RX4...2      21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+## AMC Javelin        15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+## Merc 450SLC        15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+## Cadillac Fleetwood 10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+## Merc 280           19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+## Merc 450SE         16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+## Ford Pantera L     15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+## Dodge Challenger   15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+## Fiat 128           32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+## Mazda RX4...11     21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+## Honda Civic        30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+## Merc 450SL         17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+## Merc 240D...14     24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+## Merc 240D...15     24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+## Lotus Europa       30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2</code></pre>
+<pre class="r"><code>set.seed(4321)
+sample_n(mtcars, 10, replace = TRUE) # sample 10 rows</code></pre>
+<pre><code>##                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+## Toyota Corona...1  21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+## Ferrari Dino       19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+## Porsche 914-2      26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+## Fiat X1-9          27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+## Toyota Corona...5  21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+## Ford Pantera L     15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+## Merc 280           19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+## Volvo 142E         21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+## Merc 450SLC        15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+## Cadillac Fleetwood 10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4</code></pre>
 <pre class="r"><code>slice(mtcars, 10:15) #Select rows by position. </code></pre>
 <pre><code>##                     mpg cyl  disp  hp drat   wt  qsec vs am gear carb
 ## Merc 280           19.2   6 167.6 123 3.92 3.44 18.30  1  0    4    4
@@ -739,7 +743,7 @@ myResults</code></pre>
 <pre><code>## [1] 4.482257</code></pre>
 <p>We can combine the filter and select operations through the pipe
 function</p>
-<pre class="r"><code>mtcars %&gt;% filter(mpg &gt; 25) %&gt;% select(cyl) # show the cyl of all cars with mpg &gt; 25</code></pre>
+<pre class="r"><code>mtcars %&gt;% filter(mpg&gt;25) %&gt;% select(cyl) # show the cyl of all cars with mpg &gt; 25</code></pre>
 <pre><code>##                cyl
 ## Fiat 128         4
 ## Honda Civic      4
@@ -818,7 +822,274 @@ mtcars %&gt;%
 ## 2     6     19.7   122. 
 ## 3     8     15.1   209.</code></pre>
 </div>
+<div id="grouping-and-summary-statistics" class="section level4">
+<h4>Grouping and Summary Statistics</h4>
+<p>Grouping data and performing summary statistics is an important part
+of any data analysis, so get comfortable doing this</p>
+<pre class="r"><code>mtcars %&gt;% summarise(Mean_mpg = mean(mpg, na.rm=T))</code></pre>
+<pre><code>##   Mean_mpg
+## 1 20.09062</code></pre>
+<pre class="r"><code>mtcars %&gt;% 
+  group_by(cyl) %&gt;% 
+  summarise(Min = min(mpg, na.rm = T),
+            Max = max(mpg, na.rm = T),
+            Mean = mean(mpg, na.rm = T),
+            SD = sd(mpg, na.rm = T)) %&gt;% 
+  arrange(Min)</code></pre>
+<pre><code>## # A tibble: 3 × 5
+##     cyl   Min   Max  Mean    SD
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     8  10.4  19.2  15.1  2.56
+## 2     6  17.8  21.4  19.7  1.45
+## 3     4  21.4  33.9  26.7  4.51</code></pre>
+<pre class="r"><code># What if we only wanted 6 or 4 cylinder cars
+mtcars %&gt;% 
+  filter(cyl&lt;8) %&gt;% 
+  group_by(cyl) %&gt;% 
+  summarise(Min = min(mpg, na.rm = T),
+            Max = max(mpg, na.rm = T),
+            Mean = mean(mpg, na.rm = T),
+            SD = sd(mpg, na.rm = T)) %&gt;% 
+  arrange(Min)</code></pre>
+<pre><code>## # A tibble: 2 × 5
+##     cyl   Min   Max  Mean    SD
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     6  17.8  21.4  19.7  1.45
+## 2     4  21.4  33.9  26.7  4.51</code></pre>
 </div>
+<div id="creating-new-variables" class="section level4">
+<h4>Creating New Variables</h4>
+<p>We will use the mutate function to create new variables</p>
+<pre class="r"><code>mpg_cyl &lt;- mtcars %&gt;% mutate(mc = mpg / cyl)
+head(mpg_cyl)</code></pre>
+<pre><code>##                    mpg cyl disp  hp drat    wt  qsec vs am gear carb       mc
+## Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4 3.500000
+## Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4 3.500000
+## Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1 5.700000
+## Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1 3.566667
+## Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2 2.337500
+## Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1 3.016667</code></pre>
+</div>
+<div id="using-sapply" class="section level4">
+<h4>Using sapply</h4>
+<p>sapply( ) is a function can be used to apply a given function to all
+columns of a data frame in an efficient and elegant fashion.</p>
+<pre class="r"><code>mtcars %&gt;%  select(mpg,disp,hp) %&gt;% sapply(sd)</code></pre>
+<pre><code>##        mpg       disp         hp 
+##   6.026948 123.938694  68.562868</code></pre>
+</div>
+</div>
+<div id="data-cleaning" class="section level3">
+<h3>Data Cleaning</h3>
+<p>Data cleaning is the process of detecting and correcting or removing
+corrupt or inaccurate records from a dataset and refers to identifying
+incomplete or, inaccurate parts of the data and then replacing,
+modifying, or deleting the them.</p>
+<div id="missing-values" class="section level4">
+<h4>Missing Values</h4>
+<pre class="r"><code># Detecting Missing Values
+summary(airquality)</code></pre>
+<pre><code>##      Ozone           Solar.R           Wind             Temp      
+##  Min.   :  1.00   Min.   :  7.0   Min.   : 1.700   Min.   :56.00  
+##  1st Qu.: 18.00   1st Qu.:115.8   1st Qu.: 7.400   1st Qu.:72.00  
+##  Median : 31.50   Median :205.0   Median : 9.700   Median :79.00  
+##  Mean   : 42.13   Mean   :185.9   Mean   : 9.958   Mean   :77.88  
+##  3rd Qu.: 63.25   3rd Qu.:258.8   3rd Qu.:11.500   3rd Qu.:85.00  
+##  Max.   :168.00   Max.   :334.0   Max.   :20.700   Max.   :97.00  
+##  NA&#39;s   :37       NA&#39;s   :7                                       
+##      Month            Day      
+##  Min.   :5.000   Min.   : 1.0  
+##  1st Qu.:6.000   1st Qu.: 8.0  
+##  Median :7.000   Median :16.0  
+##  Mean   :6.993   Mean   :15.8  
+##  3rd Qu.:8.000   3rd Qu.:23.0  
+##  Max.   :9.000   Max.   :31.0  
+## </code></pre>
+<pre class="r"><code>colMeans(is.na(airquality)) # provides the percentage of missing values</code></pre>
+<pre><code>##      Ozone    Solar.R       Wind       Temp      Month        Day 
+## 0.24183007 0.04575163 0.00000000 0.00000000 0.00000000 0.00000000</code></pre>
+<pre class="r"><code>missing_cases &lt;- airquality[!complete.cases(airquality),] #identifies all missing cases
+missing_cases</code></pre>
+<pre><code>##     Ozone Solar.R Wind Temp Month Day
+## 5      NA      NA 14.3   56     5   5
+## 6      28      NA 14.9   66     5   6
+## 10     NA     194  8.6   69     5  10
+## 11      7      NA  6.9   74     5  11
+## 25     NA      66 16.6   57     5  25
+## 26     NA     266 14.9   58     5  26
+## 27     NA      NA  8.0   57     5  27
+## 32     NA     286  8.6   78     6   1
+## 33     NA     287  9.7   74     6   2
+## 34     NA     242 16.1   67     6   3
+## 35     NA     186  9.2   84     6   4
+## 36     NA     220  8.6   85     6   5
+## 37     NA     264 14.3   79     6   6
+## 39     NA     273  6.9   87     6   8
+## 42     NA     259 10.9   93     6  11
+## 43     NA     250  9.2   92     6  12
+## 45     NA     332 13.8   80     6  14
+## 46     NA     322 11.5   79     6  15
+## 52     NA     150  6.3   77     6  21
+## 53     NA      59  1.7   76     6  22
+## 54     NA      91  4.6   76     6  23
+## 55     NA     250  6.3   76     6  24
+## 56     NA     135  8.0   75     6  25
+## 57     NA     127  8.0   78     6  26
+## 58     NA      47 10.3   73     6  27
+## 59     NA      98 11.5   80     6  28
+## 60     NA      31 14.9   77     6  29
+## 61     NA     138  8.0   83     6  30
+## 65     NA     101 10.9   84     7   4
+## 72     NA     139  8.6   82     7  11
+## 75     NA     291 14.9   91     7  14
+## 83     NA     258  9.7   81     7  22
+## 84     NA     295 11.5   82     7  23
+## 96     78      NA  6.9   86     8   4
+## 97     35      NA  7.4   85     8   5
+## 98     66      NA  4.6   87     8   6
+## 102    NA     222  8.6   92     8  10
+## 103    NA     137 11.5   86     8  11
+## 107    NA      64 11.5   79     8  15
+## 115    NA     255 12.6   75     8  23
+## 119    NA     153  5.7   88     8  27
+## 150    NA     145 13.2   77     9  27</code></pre>
+<p>We can also impute missing values. One of the simplest approaches is
+to use k-NN.</p>
+<pre class="r"><code>library(VIM)</code></pre>
+<pre><code>## Loading required package: colorspace</code></pre>
+<pre><code>## Loading required package: grid</code></pre>
+<pre><code>## VIM is ready to use.</code></pre>
+<pre><code>## Suggestions and bug-reports can be submitted at: https://github.com/statistikat/VIM/issues</code></pre>
+<pre><code>## 
+## Attaching package: &#39;VIM&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:datasets&#39;:
+## 
+##     sleep</code></pre>
+<pre class="r"><code>missing_imputed_knn &lt;- kNN(airquality,variable = c(&quot;Ozone&quot;),k=4)</code></pre>
+<pre><code>## Warning in `[&lt;-.data.table`(`*tmp*`, indexNA2s[, variable[j]], variable[j], :
+## 20.500000 (type &#39;double&#39;) at RHS position 1 truncated (precision lost) when
+## assigning to type &#39;integer&#39; (column 1 named &#39;Ozone&#39;)</code></pre>
+<pre class="r"><code>colMeans(is.na(missing_imputed_knn))</code></pre>
+<pre><code>##      Ozone    Solar.R       Wind       Temp      Month        Day  Ozone_imp 
+## 0.00000000 0.04575163 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000</code></pre>
+</div>
+<div id="outliers" class="section level4">
+<h4>Outliers</h4>
+<pre class="r"><code>boxplot(airquality)</code></pre>
+<p><img src="data:image/png;base64,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" width="672" />
+### Data Transformation</p>
+<pre class="r"><code>library(caret)</code></pre>
+<pre><code>## Loading required package: ggplot2</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre class="r"><code>summary(cars)</code></pre>
+<pre><code>##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00</code></pre>
+<pre class="r"><code>data_norm_model &lt;- preProcess(cars,method=&quot;range&quot;) # Apply range normalization
+cars_range_norm &lt;- predict(data_norm_model,cars)
+summary(cars_range_norm)</code></pre>
+<pre><code>##      speed             dist       
+##  Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:0.3810   1st Qu.:0.2034  
+##  Median :0.5238   Median :0.2881  
+##  Mean   :0.5429   Mean   :0.3473  
+##  3rd Qu.:0.7143   3rd Qu.:0.4576  
+##  Max.   :1.0000   Max.   :1.0000</code></pre>
+<pre class="r"><code>data_norm_z &lt;- preProcess(cars,method=c(&quot;center&quot;,&quot;scale&quot;)) # Z normalization
+cars_z_norm &lt;- predict(data_norm_z,cars)
+summary(cars_z_norm)</code></pre>
+<pre><code>##      speed               dist        
+##  Min.   :-2.15597   Min.   :-1.5903  
+##  1st Qu.:-0.64301   1st Qu.:-0.6589  
+##  Median :-0.07565   Median :-0.2709  
+##  Mean   : 0.00000   Mean   : 0.0000  
+##  3rd Qu.: 0.68083   3rd Qu.: 0.5053  
+##  Max.   : 1.81555   Max.   : 2.9888</code></pre>
+<pre class="r"><code>library(ISLR)
+head(Wage)</code></pre>
+<pre><code>##        year age           maritl     race       education             region
+## 231655 2006  18 1. Never Married 1. White    1. &lt; HS Grad 2. Middle Atlantic
+## 86582  2004  24 1. Never Married 1. White 4. College Grad 2. Middle Atlantic
+## 161300 2003  45       2. Married 1. White 3. Some College 2. Middle Atlantic
+## 155159 2003  43       2. Married 3. Asian 4. College Grad 2. Middle Atlantic
+## 11443  2005  50      4. Divorced 1. White      2. HS Grad 2. Middle Atlantic
+## 376662 2008  54       2. Married 1. White 4. College Grad 2. Middle Atlantic
+##              jobclass         health health_ins  logwage      wage
+## 231655  1. Industrial      1. &lt;=Good      2. No 4.318063  75.04315
+## 86582  2. Information 2. &gt;=Very Good      2. No 4.255273  70.47602
+## 161300  1. Industrial      1. &lt;=Good     1. Yes 4.875061 130.98218
+## 155159 2. Information 2. &gt;=Very Good     1. Yes 5.041393 154.68529
+## 11443  2. Information      1. &lt;=Good     1. Yes 4.318063  75.04315
+## 376662 2. Information 2. &gt;=Very Good     1. Yes 4.845098 127.11574</code></pre>
+<pre class="r"><code>summary(Wage)</code></pre>
+<pre><code>##       year           age                     maritl           race     
+##  Min.   :2003   Min.   :18.00   1. Never Married: 648   1. White:2480  
+##  1st Qu.:2004   1st Qu.:33.75   2. Married      :2074   2. Black: 293  
+##  Median :2006   Median :42.00   3. Widowed      :  19   3. Asian: 190  
+##  Mean   :2006   Mean   :42.41   4. Divorced     : 204   4. Other:  37  
+##  3rd Qu.:2008   3rd Qu.:51.00   5. Separated    :  55                  
+##  Max.   :2009   Max.   :80.00                                          
+##                                                                        
+##               education                     region               jobclass   
+##  1. &lt; HS Grad      :268   2. Middle Atlantic   :3000   1. Industrial :1544  
+##  2. HS Grad        :971   1. New England       :   0   2. Information:1456  
+##  3. Some College   :650   3. East North Central:   0                        
+##  4. College Grad   :685   4. West North Central:   0                        
+##  5. Advanced Degree:426   5. South Atlantic    :   0                        
+##                           6. East South Central:   0                        
+##                           (Other)              :   0                        
+##             health      health_ins      logwage           wage       
+##  1. &lt;=Good     : 858   1. Yes:2083   Min.   :3.000   Min.   : 20.09  
+##  2. &gt;=Very Good:2142   2. No : 917   1st Qu.:4.447   1st Qu.: 85.38  
+##                                      Median :4.653   Median :104.92  
+##                                      Mean   :4.654   Mean   :111.70  
+##                                      3rd Qu.:4.857   3rd Qu.:128.68  
+##                                      Max.   :5.763   Max.   :318.34  
+## </code></pre>
+<pre class="r"><code>dummy_model &lt;- dummyVars(~race,data=Wage)
+head(predict(dummy_model,Wage))</code></pre>
+<pre><code>##        race.1. White race.2. Black race.3. Asian race.4. Other
+## 231655             1             0             0             0
+## 86582              1             0             0             0
+## 161300             1             0             0             0
+## 155159             0             0             1             0
+## 11443              1             0             0             0
+## 376662             1             0             0             0</code></pre>
+</div>
+</div>
+<div id="partitioning-data-training-validation-and-test" class="section level3">
+<h3>Partitioning Data: Training, Validation, and Test</h3>
+<pre class="r"><code>summary(Default)</code></pre>
+<pre><code>##  default    student       balance           income     
+##  No :9667   No :7056   Min.   :   0.0   Min.   :  772  
+##  Yes: 333   Yes:2944   1st Qu.: 481.7   1st Qu.:21340  
+##                        Median : 823.6   Median :34553  
+##                        Mean   : 835.4   Mean   :33517  
+##                        3rd Qu.:1166.3   3rd Qu.:43808  
+##                        Max.   :2654.3   Max.   :73554</code></pre>
+<pre class="r"><code>index_train &lt;- createDataPartition(Default$default,p=0.6,list = F)
+train_data &lt;- Default[index_train,]
+rest_data &lt;- Default[-index_train,]
+nrow(train_data)</code></pre>
+<pre><code>## [1] 6001</code></pre>
+</div>
+</div>
+<div id="putting-it-together" class="section level2">
+<h2>Putting it Together</h2>
+<ol style="list-style-type: decimal">
+<li>Import Data: <code>read.csv</code></li>
+<li>Clean up Data: Missing values, imputing data, converting
+variables</li>
+<li>Create new variables: <code>mutate()</code></li>
+<li>Split data: Training, Validation, Test:
+<code>createDataPartition()</code></li>
+<li>Normalization: Range and Z normalization:
+<code>preProcess(), predict()</code></li>
+</ol>
 <div id="help" class="section level3">
 <h3>Help</h3>
 <ul>
