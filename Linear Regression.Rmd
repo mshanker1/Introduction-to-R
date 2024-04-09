@@ -1,0 +1,82 @@
+---
+title: "Linear Regression"
+output: html_document
+date: "2024-04-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Simple Linear Regression
+
+```{r}
+library(caret)
+library(dplyr)
+```
+
+### Example
+```{r}
+X=c(61,63,67,69,70,74,76,81,86,91,95,97)
+Y=c(4.28,4.08,4.42,4.17,4.48,4.3,4.82,4.7,5.11,5.13,5.64,5.56)
+```
+
+We use the `lm` command to run linear regression
+```{r}
+Model = lm(Y~X)
+summary(Model)
+plot(Model$fitted.values,Model$residuals)
+plot(X,Y)
+```
+### Another Example
+```{r}
+library(ISLR)
+Model = lm(Sales~Price,data=Carseats)
+plot(Model$fitted.values,Model$residuals,xlab="fitted values",ylab="Residuals")
+hist(Model$residuals)
+qqnorm(Model$residuals,col="red")
+qqline(Model$residuals)
+```
+
+## Multiple Linear Regression
+
+### Problem Description
+The city tax assessor was interested in predicting residential home sales prices in a midwestern city as a function of various characteristics of the home and surrounding property. 
+
+Data on 522 arms-length transactions were obtained for home sales during the year 2002. 
+
+Each line of the data set has an identification number and provides information on 12 other 
+variables. The 13 variables are: 
+
+
+Variable Number | Variable Name | Description
+----------------| ------------- | ------------
+1 | Identification number | 1-522
+2 | Sales price | Sales price of residence (dollars) 
+3 | Finished square feet | Finished area of residence (square feet) 
+4 | Number of bedrooms | Total number of bedrooms in residence
+5 | Number of bathrooms | Total number of bathrooms in residence
+6 | Air conditioning | Presence or absence of air conditioning: 1 if yes; 0 otherwise 
+7 | Garage size | Number of cars that garage will hold
+8 | Pool | Presence or absence of swimming pool: 1 if yes; 0 otherwise 
+9 | Year built 
+10 | Quality | Index for quality of construction: 
+1 indicates high quality; 
+2 indicates medium quality; 
+3 indicates low quality 
+11 | Style | Qualitative indicator of architectural style
+12 | Lot size | in Square Feet
+13 | Adjacent to highway | Presence or absence of adjacency to highway: 1 if yes; 0 otherwise
+
+#### Data
+```{r}
+realestate <- read.csv("C:/Users/mshan/Downloads/APPENC07.csv")
+head(realestate)
+```
+Now, let's construct some models
+```{r}
+Model = lm(SalesPrice ~SqFt+Bedrooms+Bathrooms,realestate)
+summary(Model)
+
+```
+
