@@ -60,10 +60,7 @@ Variable Number | Variable Name | Description
 7 | Garage size | Number of cars that garage will hold
 8 | Pool | Presence or absence of swimming pool: 1 if yes; 0 otherwise 
 9 | Year built 
-10 | Quality | Index for quality of construction: 
-1 indicates high quality; 
-2 indicates medium quality; 
-3 indicates low quality 
+10 | Quality of Construction | 1 - High; 2 - Medium; 3 - Low
 11 | Style | Qualitative indicator of architectural style
 12 | Lot size | in Square Feet
 13 | Adjacent to highway | Presence or absence of adjacency to highway: 1 if yes; 0 otherwise
@@ -77,6 +74,7 @@ Now, let's construct some models
 ```{r}
 Model = lm(SalesPrice ~SqFt+Bedrooms+Bathrooms,realestate)
 summary(Model)
+anova(Model)
 
 ```
 
