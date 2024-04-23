@@ -1,0 +1,129 @@
+---
+title: "Decision Trees"
+output: html_document
+date: "2024-04-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Decision Trees
+
+Decision trees can be used for regression type problems or classification type problems. In the former case, they are called Regression Trees, and in the latter, Classification Trees.
+
+## The Basics
+
+* We use the ‘rpart’ library from R to implement Decisions Trees (both for classification and regression)
+* The function rpart() has a parameter called method. If the method is set to ‘anova’ the model will do regression. If the method is set to ‘class’ the model will be a classifier.
+* There is also an optional control parameter, minsplit with default value of 30, which says how many observation we should have at least at each node before attempting to split it further.
+```{r}
+library(rpart) #We will use this library for decision trees
+library(rpart.plot)
+library(rattle) # We will use this library to print out a "fancy" tree
+```
+
+## Example - Regression Tree
+```{r}
+library(ISLR)
+MyData <- Carseats[,1:8]
+Model1 = rpart(Sales~.,data=MyData,method="anova") # Use regression tree
+summary(Model1)
+plot(Model1)
+fancyRpartPlot(Model1)
+text(Model1)
+```
+
+*What is cp, or cost complexity pruning?*
+
+$$ \text{For each value of } \alpha \text{ there corresponds a subtree } T\subset T_0 \in \\
+\sum_{m=1}^{|T|} \sum_{x_i \in R_m} (y_i - \hat{Y}_{R_m})^2 + \alpha|T| $$
+
+Let us now use this information to prune the model
+```{r}
+plotcp(Model1)
+printcp(Model1)
+P_Model1 = prune.rpart(Model1,cp=0.016043)
+summary(P_Model1)
+fancyRpartPlot(P_Model1)
+```
+## Classification Trees
+
+A classification tree is similar to a regression tree, except that it is used to predict a qualitative response rather than a quantitative one. In classification trees, we predict that each observation belongs to the *most commonly occuring class* of training observations in the region to which it belongs.
+
+### Criteria
+
+* Classification error rate 
+
+$$E = 1 - \max_k (\hat{p}_{mk}) \\ \text{ where } \hat{p}_{mk} \text{represents the proportion of training observations in the mth region that are from the kth class}$$ 
+* Gini Index
+
+$$ G = \sum_{k=1}^{K} \hat{p}_{mk} (1-\hat{p}_{mk}) $$
+
+* Cross-entropy
+
+$$ D = -\sum_{k=1}^{K} \hat{p}_{mk} log{(\hat{p}_{mk})} $$
+### Example
+
+```{r}
+attach(MyData)
+High = ifelse(Sales<=8, "No","Yes") # Create a qualitative response
+MyData = data.frame(MyData,High)
+ModelC = rpart(High~.-Sales,data=MyData,method="class")
+ModelC
+summary(ModelC)
+fancyRpartPlot(ModelC)
+plot(ModelC)
+text(ModelC, pretty = 0)
+```
+Let's apply this approach to a hold-out set
+```{r}
+set.seed(12)
+training = sample(1:nrow(MyData),200)
+MyData.train = MyData[training,]
+MyData.test <- MyData[-training,]
+ModelCa = rpart(High~.-Sales,data=MyData,subset=training,method="class")
+summary(ModelCa)
+ModelCa.predict = predict(ModelCa, MyData.test,type="class")
+table(ModelCa.predict,MyData.test$High)
+```
+
+Let's prune the tree based on cp value
+```{r}
+ModelCa.prune <- prune.rpart(ModelCa,cp=0.02380952)
+plot(ModelCa.prune)
+text(ModelCa.prune,pretty = 0)
+ModelCa.prune.predict <- predict(ModelCa.prune,MyData.test,type="class")
+table(ModelCa.prune.predict,MyData.test$High)
+
+```
+### Using the Gini Index
+```{r}
+gini  <- function(tree){
+  # calculate gini index for `rpart` tree
+  ylevels <- attributes(tree)[["ylevels"]]
+  nclass <- length(ylevels)
+  yval2 <- tree[["frame"]][["yval2"]]
+  vars <- tree[["frame"]][["var"]]
+  labls = labels(tree)
+  df = data.frame(matrix(nrow=length(labls), ncol=5))
+  colnames(df) <- c("Name", "GiniIndex", "Class", "Items", "ItemProbs")
+  
+  for(i in 1:length(vars)){
+    row <- yval2[i , ]
+    node.class <- row[1]
+    j <- 2
+    node.class_counts = row[j:(j+nclass-1)]
+    j <- j+nclass
+    node.class_probs = row[j:(j+nclass-1)]
+    
+    gini = 1-sum(node.class_probs^2)
+    gini = round(gini,5)
+    name = paste(vars[i], " (", labls[i], ")")
+    df[i,] = c(name, gini, node.class, toString(round(node.class_counts,5)), toString(round(node.class_probs,5)))
+  }
+  return(df)
+}
+gini(ModelCa)
+```
+
