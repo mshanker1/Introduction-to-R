@@ -1,0 +1,46 @@
+---
+title: "Classification"
+output: html_document
+date: "2024-04-22"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Logistic Regression
+
+In this module, we illustrate classification using logistic regression. We will use the same dataset that we did for your assignment and project, the one on Sales Price for mid-western homes
+
+### Data import and cleaning
+```{r}
+sales <- read.csv("APPENC07.csv")
+head(sales)
+
+library(dplyr)
+sales$Quality2 <- recode(sales$Qualtiy,"1" = 1,"2" = 0, "3"=0) # recode the quality variable
+head(sales)
+```
+### Analysis
+
+Let's run logistic now
+```{r}
+Model <- glm(Quality2~SqFt,data=sales,family="binomial")
+summary(Model)
+or = exp(Model$coefficients[2])
+or
+```
+Let's also print the fitted values
+```{r}
+x <- data.frame(Quality=sales$Quality2,Size=sales$SqFt,Fitted=fitted(Model))
+head(x)
+
+predict(Model, data.frame(SqFt=c(2000,3000)), type = "response") #return probabilities
+predict(Model,data.frame(SqFt=c(2000,3000)), type='link') #returns log odds
+
+# Let's plot size and fitted probabilities
+plot(sales$SqFt,fitted(Model))
+abline(h=0.5)
+```
+
+
