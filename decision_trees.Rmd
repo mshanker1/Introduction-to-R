@@ -1,6 +1,8 @@
 ---
 title: "Decision Trees"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 date: "2024-04-23"
 ---
 
@@ -27,6 +29,7 @@ library(rattle) # We will use this library to print out a "fancy" tree
 ```{r}
 library(ISLR)
 MyData <- Carseats[,1:8]
+set.seed(2342)
 Model1 = rpart(Sales~.,data=MyData,method="anova") # Use regression tree
 summary(Model1)
 plot(Model1)
@@ -43,7 +46,7 @@ Let us now use this information to prune the model
 ```{r}
 plotcp(Model1)
 printcp(Model1)
-P_Model1 = prune.rpart(Model1,cp=0.016043)
+P_Model1 = prune.rpart(Model1,cp=0.03359237)
 summary(P_Model1)
 fancyRpartPlot(P_Model1)
 ```
@@ -58,7 +61,7 @@ A classification tree is similar to a regression tree, except that it is used to
 $$E = 1 - \max_k (\hat{p}_{mk}) \\ \text{ where } \hat{p}_{mk} \text{represents the proportion of training observations in the mth region that are from the kth class}$$ 
 * Gini Index
 
-$$ G = \sum_{k=1}^{K} \hat{p}_{mk} (1-\hat{p}_{mk}) $$
+$$ G = 1 - \sum_{k=1}^{K} \hat{p}_{mk}^2  $$
 
 * Cross-entropy
 
